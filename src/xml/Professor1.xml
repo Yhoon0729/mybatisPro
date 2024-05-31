@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xml.professor1">
+	<select id="count" resultType="int">
+		select count(*) from professor
+	</select>
+	
+	<select id="professorList" resultType="professor">
+		select * from professor
+	</select>
+	
+	<!-- 기본형 타입이면 {}안에 변수 이름 상관 없음 -->
+	<select id="selectdeptno" parameterType="int" resultType="professor">
+		select * from professor where deptno = #{value}
+	</select>
+	
+	<!-- 기본형 타입이 아니면 {}안에 변수 이름과 같은 이름의 객체를 가져옴 -->
+	<select id="selectnameposition" parameterType="map" resultType="professor">
+		select * from professor where name like '_${name}%'
+		and position = #{position}
+	</select>
+	
+	<select id="select" resultType="professor" parameterType="map">
+		select * from professor
+		<trim prefix="where" prefixOverrides="and || or">
+			<if test="deptno != null">and deptno = #{deptno}</if>
+			<if test="position != null">and position = #{position}</if>
+			<if test="prono != null">and profno = #{profno}</if>
+			
+			<if test="datas != null">
+				and deptno in
+				<foreach collection="datas" item="d" separator="," open="(" close=")">
+					#{d}
+				</foreach>
+			</if>
+		</trim>
+		order by profno
+	</select>
+	
+	<!-- DML임으로 resultType 없어야 함 -->
+	<insert id="insertProfessor" parameterType="professor">
+		<selectKey keyProperty="profno" resultType="int" order="BEFORE">
+			select nvl(max(profno)+1, 1111) a from professor
+		</selectKey>
+		
+		insert into professor values
+		(#{profno}, #{name}, #{id}, #{position}, #{pay}, sysdate, 0, #{deptno}, #{email}, '')
+	</insert>
+</mapper>

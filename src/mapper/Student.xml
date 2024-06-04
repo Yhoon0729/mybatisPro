@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xml.student">
+	<select id="selectStudent" resultType="student">
+		select * from student
+	</select>
+	
+	<insert id="insertStudent" parameterType="student">
+		insert into student (studno, name, grade, id, jumin, deptno1)
+			values (#{studno}, #{name}, #{grade}, #{id}, #{jumin}, #{major1})
+	</insert>
+	
+	<update id="updateStudent" parameterType="student">
+		update student 
+		set grade = #{grade},
+		weight = #{weight},
+		height = #{height},
+		profno = #{profno}
+		where studno = #{studno}
+	<!-- 		
+		set(grade, weight, height, profno) = 
+			(#{grade}, #{weight}, #{height}, #{profno})
+		where studno = #{studno} 
+	-->
+	</update>
+	
+	<delete id="deleteStudent" parameterType="student">
+		delete
+		from student
+		where studno = #{studno}
+	</delete>
+	
+	<!-- table column 명과 Bean의 property 상이할 때 -->
+	<resultMap type="student" id="studentRMap">
+		<result column="deptno1" jdbcType="BIGINT" property="major1"/>
+		<result column="deptno2" jdbcType="BIGINT" property="major2"/>
+	</resultMap>
+	
+	<select id="selectRMap" resultMap="studentRMap">
+		select * from student
+	</select>
+	
+	<select id="selectIf" resultType="student" parameterType="map">
+		select * from student
+		<where>
+			<if test="grade!=null"> grade = #{grade} </if>
+			<if test="height!=null"> height >= #{height} </if>
+			<if test="studno!=null"> studno = #{studno} </if>
+		</where>
+	</select>
+	
+	<select id="selectChoose" resultType="student" parameterType="map">
+		select * from student
+		<choose>
+			<when test="grade != null and height != null">
+				where grade = #{grade} and height &lt;= #{height}
+			</when>
+			<when test="height != null">
+				where height &lt;= #{height}
+			</when>
+			<when test="grade != null">
+				where grade = #{grade}
+			</when>
+		</choose>
+	</select>
+</mapper>

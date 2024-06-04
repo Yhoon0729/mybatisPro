@@ -15,6 +15,7 @@ public class Student {
 	private int major1; // deptno1
 	private int major2; // deptno2
 	private int profno;
+	
 	public int getStudno() {
 		return studno;
 	}
@@ -93,5 +94,5 @@ public class Student {
 		return "Student [studno=" + studno + ", name=" + name + ", id=" + id + ", grade=" + grade + ", jumin=" + jumin
 				+ ", birthday=" + birthday + ", tel=" + tel + ", height=" + height + ", weight=" + weight + ", major1="
 				+ major1 + ", major2=" + major2 + ", profno=" + profno + "]";
-	}
+	}	
 }
